@@ -2,6 +2,7 @@ package generator
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"math/rand"
 	"strings"
@@ -66,4 +67,26 @@ func Run(length *int) (int, error) {
 		fmt.Println(password)
 	}
 	return 0, nil
+}
+
+type PasswordFlags struct {
+	FlagSet *flag.FlagSet
+	Length  *int
+}
+
+func Flag() *PasswordFlags {
+	pwdFlag := flag.NewFlagSet("password", flag.ExitOnError)
+
+	pwdFlag.Usage = func() {
+		fmt.Println("Usage: [password] [...flags] ")
+		fmt.Println("Flags:")
+		flag.PrintDefaults()
+	}
+
+	length := pwdFlag.Int("length", 24, "Length of password")
+
+	return &PasswordFlags{
+		FlagSet: pwdFlag,
+		Length:  length,
+	}
 }
