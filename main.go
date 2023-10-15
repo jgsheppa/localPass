@@ -5,9 +5,15 @@ import (
 	"os"
 
 	"github.com/jgsheppa/localPass/generator"
+	"github.com/jgsheppa/localPass/pass"
 )
 
 func main() {
+	passInfo, err := pass.CreatePass(os.Stdin)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(passInfo)
 	passwordCmd := generator.Flag()
 
 	if len(os.Args) < 2 {
@@ -27,5 +33,4 @@ func main() {
 		passwordCmd.FlagSet.Usage()
 		os.Exit(1)
 	}
-
 }
