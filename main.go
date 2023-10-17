@@ -9,11 +9,6 @@ import (
 )
 
 func main() {
-	passInfo, err := pass.CreatePass(os.Stdout, os.Stdin)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(passInfo)
 	passwordCmd := generator.Flag()
 
 	if len(os.Args) < 2 {
@@ -25,6 +20,12 @@ func main() {
 	case "password":
 		passwordCmd.FlagSet.Parse(os.Args[2:])
 		code, err := generator.Run(passwordCmd.Length)
+		if err != nil {
+			fmt.Println(err)
+		}
+		os.Exit(code)
+	case "create":
+		code, err := pass.Run()
 		if err != nil {
 			fmt.Println(err)
 		}

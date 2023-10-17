@@ -21,7 +21,7 @@ func TestPassEntry_URLAndGeneratedPassword(t *testing.T) {
 
 	var output bytes.Buffer
 
-	gotPass, err := pass.CreatePass(&output, reader)
+	gotPass, err := pass.NewPass().WithInput(reader).WithOutput(&output).CreatePass()
 	if err != nil {
 		t.Fatalf("could not create pass: %e", err)
 	}
@@ -44,18 +44,18 @@ func TestPassEntry_URLAndGeneratedPassword(t *testing.T) {
 func TestPassEntry_URLAndUserPassword(t *testing.T) {
 	t.Parallel()
 
-	input := "www.test.com\n N \n"
+	input := "www.test.com\n N \n password \n"
 	reader := strings.NewReader(input)
 
 	var output bytes.Buffer
 
-	_, err := pass.CreatePass(&output, reader)
+	_, err := pass.NewPass().WithInput(reader).WithOutput(&output).CreatePass()
 	if err != nil {
-		t.Fatalf("could not create pass: %e", err)
+		t.Fatalf("could not create pass: %v", err.Error())
 	}
 
 	got := output.String()
-	want := "Enter a URL: Generate password? (Y/n): Enter your password:"
+	want := "Enter your password:"
 
 	if !strings.Contains(got, want) {
 		t.Errorf("got %s, want %s", got, want)
