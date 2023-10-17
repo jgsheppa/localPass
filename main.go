@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	passInfo, err := pass.CreatePass(os.Stdin)
+	passInfo, err := pass.CreatePass(os.Stdout, os.Stdin)
 	if err != nil {
 		fmt.Println(err)
 	}

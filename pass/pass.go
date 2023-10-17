@@ -13,10 +13,11 @@ type Pass struct {
 	URL      string
 	password string
 	reader   *bufio.Reader
+	output   io.Writer
 }
 
 func (p *Pass) EnterURL() error {
-	fmt.Print("Enter a URL: ")
+	fmt.Fprint(p.output, "Enter a URL: ")
 	url, err := p.reader.ReadString('\n')
 	if err != nil {
 		return err
@@ -29,7 +30,7 @@ func (p *Pass) EnterURL() error {
 }
 
 func (p *Pass) EnterPassword() error {
-	fmt.Print("Generate password? (Y/n): ")
+	fmt.Fprint(p.output, "Generate password? (Y/n): ")
 	answer, err := p.reader.ReadString('\n')
 	if err != nil {
 		return err
@@ -47,7 +48,7 @@ func (p *Pass) EnterPassword() error {
 		return nil
 	}
 
-	fmt.Print("Enter your password: ")
+	fmt.Fprint(p.output, "Enter your password: ")
 	userPassword, err := p.reader.ReadString('\n')
 	if err != nil {
 		return err
@@ -57,10 +58,12 @@ func (p *Pass) EnterPassword() error {
 	return nil
 }
 
-func CreatePass(rd io.Reader) (Pass, error) {
+func CreatePass(output io.Writer, rd io.Reader) (Pass, error) {
 	var pass Pass
 
+	// TODO: create pass generator with default values
 	pass.reader = bufio.NewReader(rd)
+	pass.output = output
 	pass.EnterURL()
 	pass.EnterPassword()
 
