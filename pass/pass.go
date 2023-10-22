@@ -6,8 +6,10 @@ import (
 	"io"
 	"os"
 	"strings"
+	"syscall"
 
 	"github.com/jgsheppa/localPass/generator"
+	"golang.org/x/term"
 )
 
 type Pass struct {
@@ -72,11 +74,11 @@ func (p *Pass) EnterPassword(reader *bufio.Reader) error {
 	}
 
 	fmt.Fprint(p.writer, "Enter your password: ")
-	userPassword, err := reader.ReadString('\n')
+	userPassword, err := term.ReadPassword(int(syscall.Stdin))
 	if err != nil {
 		return err
 	}
-	p.password = userPassword
+	p.password = string(userPassword)
 	fmt.Println("Pass successfully created!")
 
 	return nil
