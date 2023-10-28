@@ -55,14 +55,15 @@ func (p *Pass) EnterURL(reader *bufio.Reader) error {
 
 func (p *Pass) EnterPassword(reader *bufio.Reader) error {
 	fmt.Fprint(p.writer, "Generate password? (Y/n): ")
+
 	answer, err := reader.ReadString('\n')
 	if err != nil {
 		return err
 	}
 
-	trimAnswer := strings.TrimSpace(answer)
+	trimAnswer := strings.ToLower(strings.TrimSpace(answer))
 
-	if trimAnswer == "Y" || trimAnswer == "y" {
+	if trimAnswer == "" || trimAnswer == "y" {
 		conditions := generator.NewPasswordConditions()
 		pw, err := conditions.GeneratePassword()
 		if err != nil {
