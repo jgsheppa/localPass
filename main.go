@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/jgsheppa/localPass/generator"
+	"github.com/jgsheppa/localPass/list"
 	"github.com/jgsheppa/localPass/pass"
 )
 
@@ -13,7 +14,7 @@ func main() {
 
 	if len(os.Args) < 2 {
 		passwordCmd.FlagSet.Usage()
-		os.Exit(1)
+		os.Exit(0)
 	}
 
 	switch os.Args[1] {
@@ -30,8 +31,14 @@ func main() {
 			fmt.Println(err)
 		}
 		os.Exit(code)
+	case "list":
+		code, err := list.Run()
+		if err != nil {
+			fmt.Println(err)
+		}
+		os.Exit(code)
 	default:
 		passwordCmd.FlagSet.Usage()
-		os.Exit(1)
+		os.Exit(0)
 	}
 }
