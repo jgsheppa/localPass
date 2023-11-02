@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/jgsheppa/localPass/generator"
 	"github.com/jgsheppa/localPass/list"
+	"github.com/jgsheppa/localPass/models"
 	"github.com/jgsheppa/localPass/pass"
 )
 
@@ -17,6 +19,11 @@ func main() {
 		os.Exit(0)
 	}
 
+	services, err := models.NewServices()
+	if err != nil {
+		log.Fatalf("could not start services: %e", err)
+	}
+
 	switch os.Args[1] {
 	case "password":
 		passwordCmd.FlagSet.Parse(os.Args[2:])
@@ -26,7 +33,7 @@ func main() {
 		}
 		os.Exit(code)
 	case "create":
-		code, err := pass.Run()
+		code, err := pass.Run(services.PassService)
 		if err != nil {
 			fmt.Println(err)
 		}

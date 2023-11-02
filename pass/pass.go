@@ -9,14 +9,16 @@ import (
 	"syscall"
 
 	"github.com/jgsheppa/localPass/generator"
+	"github.com/jgsheppa/localPass/models"
 	"golang.org/x/term"
 )
 
 type Pass struct {
-	URL      string
-	password string
-	reader   io.Reader
-	writer   io.Writer
+	URL         string
+	password    string
+	reader      io.Reader
+	writer      io.Writer
+	PassService models.PassService
 }
 
 type option func(*Pass) error
@@ -28,6 +30,11 @@ func NewPass() *Pass {
 	}
 
 	return pass
+}
+
+func (p *Pass) WithService(service models.PassService) *Pass {
+	p.PassService = service
+	return p
 }
 
 func (p *Pass) WithInput(input io.Reader) *Pass {
@@ -61,16 +68,15 @@ func (p *Pass) EnterPassword(reader *bufio.Reader) error {
 		return err
 	}
 
-	trimAnswer := strings.ToLower(strings.TrimSpace(answer))
+	cleanAnswer := strings.ToLower(strings.TrimSpace(answer))
 
-	if trimAnswer == "" || trimAnswer == "y" {
+	if cleanAnswer == "" || cleanAnswer == "y" {
 		conditions := generator.NewPasswordConditions()
 		pw, err := conditions.GeneratePassword()
 		if err != nil {
 			return err
 		}
 		p.password = pw
-		fmt.Println("Pass successfully created!")
 		return nil
 	}
 
@@ -80,9 +86,24 @@ func (p *Pass) EnterPassword(reader *bufio.Reader) error {
 		return err
 	}
 	p.password = string(userPassword)
-	fmt.Println("Pass successfully created!")
 
 	return nil
+}
+
+func (p *Pass) SavePass() (*Pass, error) {
+	pass := &models.Pass{
+		URL:      p.URL,
+		Password: p.password,
+	}
+	err := p.PassService.Create(pass)
+	if err == models.ErrURLInvalid {
+		return p, err
+	} else if err != nil {
+		return p, err
+	}
+
+	fmt.Println("Pass successfully created!")
+	return p, nil
 }
 
 func (p *Pass) CreatePass() (*Pass, error) {
@@ -100,8 +121,12 @@ func (p *Pass) CreatePass() (*Pass, error) {
 	return p, nil
 }
 
-func Run() (int, error) {
-	_, err := NewPass().WithInput(os.Stdin).WithOutput(os.Stdout).CreatePass()
+func Run(service models.PassService) (int, error) {
+	newPass, err := NewPass().WithInput(os.Stdin).WithOutput(os.Stdout).WithService(service).CreatePass()
+	if err != nil {
+		return 1, err
+	}
+	_, err = newPass.SavePass()
 	if err != nil {
 		return 1, err
 	}
