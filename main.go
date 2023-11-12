@@ -19,10 +19,11 @@ func main() {
 		os.Exit(0)
 	}
 
-	services, err := models.NewServices()
+	services, err := models.NewServices("localpass.db")
 	if err != nil {
 		log.Fatalf("could not start services: %e", err)
 	}
+	defer services.Close()
 
 	switch os.Args[1] {
 	case "password":
