@@ -1,5 +1,5 @@
 CREATE TABLE passes (
 	id         INTEGER PRIMARY KEY AUTOINCREMENT,
-	url       TEXT NOT NULL,
+	url       TEXT UNIQUE NOT NULL,
 	password      TEXT NOT NULL
 );

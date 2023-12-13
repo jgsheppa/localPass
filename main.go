@@ -40,7 +40,7 @@ func main() {
 		}
 		os.Exit(code)
 	case "list":
-		code, err := list.Run()
+		code, err := list.Run(services.PassService)
 		if err != nil {
 			fmt.Println(err)
 		}

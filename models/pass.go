@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 	"regexp"
 )
 
@@ -60,7 +59,6 @@ type passSQL struct {
 }
 
 func (pv *passValidator) Create(pass *Pass) error {
-	fmt.Println(pass.URL)
 	err := runModelValFuncs[Pass](pass, pv.validURL)
 	if err != nil {
 		return err
@@ -82,11 +80,25 @@ func (p *passSQL) Create(pass *Pass) error {
 }
 
 func (pv *passValidator) Get() ([]Pass, error) {
-	return nil, nil
+	return pv.PassDB.Get()
 }
 
 func (p *passSQL) Get() ([]Pass, error) {
-	return nil, nil
+	var passes []Pass
+	rows, err := p.db.Query(`SELECT * from passes`)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var pass Pass
+		if err := rows.Scan(&pass.ID, &pass.URL, &pass.Password); err != nil {
+			return nil, err
+		}
+		passes = append(passes, pass)
+	}
+	defer rows.Close()
+
+	return passes, nil
 }
 
 // Validators

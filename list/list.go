@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	"github.com/jgsheppa/localPass/models"
 )
 
 type PassList struct {
@@ -35,9 +37,18 @@ func (pl *PassList) PrintList() error {
 	return nil
 }
 
-func Run() (int, error) {
+func Run(service models.PassService) (int, error) {
+	var urls []string
+	passes, err := service.Get()
+	if err != nil {
+		return 1, err
+	}
+	for _, pass := range passes {
+		urls = append(urls, pass.URL)
+	}
+
 	// TODO: remove these sites once database is integrated
-	err := NewList().WithSites([]string{"www.acme.xyz"}).PrintList()
+	err = NewList().WithSites(urls).PrintList()
 	if err != nil {
 		return 1, err
 	}

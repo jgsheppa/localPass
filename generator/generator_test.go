@@ -12,7 +12,10 @@ func TestPasswordGenerator_Length(t *testing.T) {
 
 	passwordConditions := generator.NewPasswordConditions(generator.WithLength(24))
 
-	generated, _ := passwordConditions.GeneratePassword()
+	generated, err := passwordConditions.GeneratePassword()
+	if err != nil {
+		t.Errorf("could not generate password in TestPasswordGenerator_Length: %v", err)
+	}
 
 	got := len(generated)
 	want := 24
@@ -27,8 +30,14 @@ func TestPasswordGenerator_Random(t *testing.T) {
 
 	passwordConditions := generator.NewPasswordConditions(generator.WithLength(24))
 
-	got, _ := passwordConditions.GeneratePassword()
-	want, _ := passwordConditions.GeneratePassword()
+	got, err := passwordConditions.GeneratePassword()
+	if err != nil {
+		t.Errorf("could not generate password for got in TestPasswordGenerator_Random: %v", err)
+	}
+	want, err := passwordConditions.GeneratePassword()
+	if err != nil {
+		t.Errorf("could not generate password for want in TestPasswordGenerator_Random: %v", err)
+	}
 
 	if cmp.Equal(got, want) {
 		t.Errorf("got %s, want %s", got, want)
