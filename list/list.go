@@ -47,7 +47,6 @@ func Run(service models.PassService) (int, error) {
 		urls = append(urls, pass.URL)
 	}
 
-	// TODO: remove these sites once database is integrated
 	err = NewList().WithSites(urls).PrintList()
 	if err != nil {
 		return 1, err
