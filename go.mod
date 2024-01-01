@@ -1,6 +1,6 @@
 module github.com/jgsheppa/localPass
 
-go 1.21.0
+go 1.21
 
 require golang.org/x/term v0.13.0
 

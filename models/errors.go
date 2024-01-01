@@ -3,9 +3,11 @@ package models
 import "strings"
 
 const (
-	ErrNotFound   modelError   = "models: resource not found"
-	ErrIDInvalid  privateError = "models: ID provided was invalid"
-	ErrURLInvalid modelError   = "Invalid URL provided"
+	ErrNotFound          modelError   = "models: resource not found"
+	ErrIDInvalid         privateError = "models: ID provided was invalid"
+	ErrURLInvalid        modelError   = "Invalid URL provided"
+	ErrUniqueURLRequired modelError   = "URL must be unique"
+	ErrCreatePass        modelError   = "Could not create pass"
 )
 
 type modelError string

@@ -2,7 +2,9 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 	"regexp"
+	"strings"
 )
 
 type Pass struct {
@@ -73,7 +75,10 @@ func (p *passSQL) Create(pass *Pass) error {
 		return err
 	}
 	if _, err := stmt.Exec(pass.URL, pass.Password); err != nil {
-		return err
+		if strings.Contains(err.Error(), "UNIQUE") {
+			return fmt.Errorf("%v: %v", ErrCreatePass, ErrUniqueURLRequired)
+		}
+		return ErrCreatePass
 	}
 	defer stmt.Close()
 	return nil
