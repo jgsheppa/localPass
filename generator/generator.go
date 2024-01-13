@@ -16,15 +16,15 @@ const (
 	allCharSet     string = lowerCharSet + upperCharSet + specialCharSet + numberSet
 )
 
-type PasswordConditions struct {
+type Password struct {
 	length   int
 	Password string
 }
 
-type PasswordConditionsOption func(*PasswordConditions)
+type PasswordOption func(*Password)
 
-func NewPasswordConditions(opts ...PasswordConditionsOption) *PasswordConditions {
-	pc := &PasswordConditions{
+func NewPassword(opts ...PasswordOption) *Password {
+	pc := &Password{
 		length: 24,
 	}
 
@@ -35,13 +35,13 @@ func NewPasswordConditions(opts ...PasswordConditionsOption) *PasswordConditions
 	return pc
 }
 
-func WithLength(length int) PasswordConditionsOption {
-	return func(pc *PasswordConditions) {
+func WithLength(length int) PasswordOption {
+	return func(pc *Password) {
 		pc.length = length
 	}
 }
 
-func (pc *PasswordConditions) GeneratePassword() (string, error) {
+func (pc *Password) GeneratePassword() (string, error) {
 	var password strings.Builder
 
 	if pc.length < 8 {
@@ -57,7 +57,7 @@ func (pc *PasswordConditions) GeneratePassword() (string, error) {
 }
 
 func Run(length *int) (int, error) {
-	conditions := NewPasswordConditions(WithLength(*length))
+	conditions := NewPassword(WithLength(*length))
 	password, err := conditions.GeneratePassword()
 	if err != nil {
 		return 1, err

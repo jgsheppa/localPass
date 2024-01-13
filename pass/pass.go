@@ -71,7 +71,7 @@ func (p *Pass) EnterPassword(reader *bufio.Reader) error {
 	cleanAnswer := strings.ToLower(strings.TrimSpace(answer))
 
 	if cleanAnswer == "" || cleanAnswer == "y" {
-		conditions := generator.NewPasswordConditions()
+		conditions := generator.NewPassword()
 		pw, err := conditions.GeneratePassword()
 		if err != nil {
 			return err

@@ -10,14 +10,14 @@ import (
 func TestPasswordGenerator_Length(t *testing.T) {
 	t.Parallel()
 
-	passwordConditions := generator.NewPasswordConditions(generator.WithLength(24))
+	passwordGenerator := generator.NewPassword(generator.WithLength(24))
 
-	generated, err := passwordConditions.GeneratePassword()
+	generatedPw, err := passwordGenerator.GeneratePassword()
 	if err != nil {
 		t.Errorf("could not generate password in TestPasswordGenerator_Length: %v", err)
 	}
 
-	got := len(generated)
+	got := len(generatedPw)
 	want := 24
 
 	if !cmp.Equal(got, want) {
@@ -28,13 +28,13 @@ func TestPasswordGenerator_Length(t *testing.T) {
 func TestPasswordGenerator_Random(t *testing.T) {
 	t.Parallel()
 
-	passwordConditions := generator.NewPasswordConditions(generator.WithLength(24))
+	passwordGenerator := generator.NewPassword(generator.WithLength(24))
 
-	got, err := passwordConditions.GeneratePassword()
+	got, err := passwordGenerator.GeneratePassword()
 	if err != nil {
 		t.Errorf("could not generate password for got in TestPasswordGenerator_Random: %v", err)
 	}
-	want, err := passwordConditions.GeneratePassword()
+	want, err := passwordGenerator.GeneratePassword()
 	if err != nil {
 		t.Errorf("could not generate password for want in TestPasswordGenerator_Random: %v", err)
 	}
